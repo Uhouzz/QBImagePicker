@@ -8,7 +8,6 @@
 
 #import "QBImagePickerController.h"
 #import <Photos/Photos.h>
-
 // ViewControllers
 #import "QBAlbumsViewController.h"
 

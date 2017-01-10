@@ -28,8 +28,6 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
 
 @interface QBAlbumsViewController () <PHPhotoLibraryChangeObserver>
 
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *doneButton;
-
 @property (nonatomic, copy) NSArray *fetchResults;
 @property (nonatomic, copy) NSArray *assetCollections;
 
@@ -41,7 +39,7 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
 {
     [super viewDidLoad];
     
-    [self setUpToolbarItems];
+    [self.navigationController setToolbarHidden:YES];
     
     // Fetch user albums and smart albums
     PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
@@ -49,6 +47,8 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     self.fetchResults = @[smartAlbums, userAlbums];
     
     [self updateAssetCollections];
+    
+    [self setupNavigationItem];
     
     // Register observer
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
@@ -58,25 +58,31 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
 {
     [super viewWillAppear:animated];
     
-    // Configure navigation item
-    self.navigationItem.title = NSLocalizedStringFromTableInBundle(@"albums.title", @"QBImagePicker", self.imagePickerController.assetBundle, nil);
-    self.navigationItem.prompt = self.imagePickerController.prompt;
-    
-    // Show/hide 'Done' button
-    if (self.imagePickerController.allowsMultipleSelection) {
-        [self.navigationItem setRightBarButtonItem:self.doneButton animated:NO];
-    } else {
+    if (!self.imagePickerController.allowsMultipleSelection) {
         [self.navigationItem setRightBarButtonItem:nil animated:NO];
     }
-    
-    [self updateControlState];
-    [self updateSelectionInfo];
 }
 
 - (void)dealloc
 {
     // Deregister observer
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
+}
+
+- (void) setupNavigationItem {
+    UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [cancelButton setFrame:CGRectMake(0, 0, 60, 44)];
+    NSBundle *bundle = self.imagePickerController.assetBundle;
+    NSString *cancel = NSLocalizedStringFromTableInBundle(@"assets.footer.cancel", @"QBImagePicker", bundle, nil);
+    cancelButton.titleLabel.font = [UIFont systemFontOfSize:15];
+    [cancelButton setTitle:cancel forState:UIControlStateNormal];
+    [cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [cancelButton addTarget:self action:@selector(cancelButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:cancelButton];
+    
+    UIBarButtonItem *rightFixeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    rightFixeItem.width = -10;
+    self.navigationItem.rightBarButtonItems = @[rightFixeItem,rightItem];
 }
 
 
@@ -92,60 +98,11 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
 
 #pragma mark - Actions
 
-- (IBAction)cancel:(id)sender
-{
+- (void) cancelButtonAction {
     if ([self.imagePickerController.delegate respondsToSelector:@selector(qb_imagePickerControllerDidCancel:)]) {
         [self.imagePickerController.delegate qb_imagePickerControllerDidCancel:self.imagePickerController];
     }
 }
-
-- (IBAction)done:(id)sender
-{
-    if ([self.imagePickerController.delegate respondsToSelector:@selector(qb_imagePickerController:didFinishPickingAssets:)]) {
-        [self.imagePickerController.delegate qb_imagePickerController:self.imagePickerController
-                                               didFinishPickingAssets:self.imagePickerController.selectedAssets.array];
-    }
-}
-
-
-#pragma mark - Toolbar
-
-- (void)setUpToolbarItems
-{
-    // Space
-    UIBarButtonItem *leftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
-    UIBarButtonItem *rightSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
-    
-    // Info label
-    NSDictionary *attributes = @{ NSForegroundColorAttributeName: [UIColor blackColor] };
-    UIBarButtonItem *infoButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
-    infoButtonItem.enabled = NO;
-    [infoButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
-    [infoButtonItem setTitleTextAttributes:attributes forState:UIControlStateDisabled];
-    
-    self.toolbarItems = @[leftSpace, infoButtonItem, rightSpace];
-}
-
-- (void)updateSelectionInfo
-{
-    NSMutableOrderedSet *selectedAssets = self.imagePickerController.selectedAssets;
-    
-    if (selectedAssets.count > 0) {
-        NSBundle *bundle = self.imagePickerController.assetBundle;
-        NSString *format;
-        if (selectedAssets.count > 1) {
-            format = NSLocalizedStringFromTableInBundle(@"assets.toolbar.items-selected", @"QBImagePicker", bundle, nil);
-        } else {
-            format = NSLocalizedStringFromTableInBundle(@"assets.toolbar.item-selected", @"QBImagePicker", bundle, nil);
-        }
-        
-        NSString *title = [NSString stringWithFormat:format, selectedAssets.count];
-        [(UIBarButtonItem *)self.toolbarItems[1] setTitle:title];
-    } else {
-        [(UIBarButtonItem *)self.toolbarItems[1] setTitle:@""];
-    }
-}
-
 
 #pragma mark - Fetching Asset Collections
 
@@ -253,12 +210,6 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     
     return NO;
 }
-
-- (void)updateControlState
-{
-    self.doneButton.enabled = [self isMinimumSelectionLimitFulfilled];
-}
-
 
 #pragma mark - UITableViewDataSource
 

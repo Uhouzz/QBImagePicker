@@ -8,6 +8,11 @@
 
 "albums.title" = "照片";
 
+"assets.alert.content" = "你最多只能选择%ld张图片";
+"assets.alert.done" = "知道了";
+"assets.footer.cancel" = "取消";
+"assets.footer.done" = "完成";
+"assets.footer.preview" = "预览";
 "assets.footer.photo" = "共%ld张照片";
 "assets.footer.photos" = "共%ld张照片";
 "assets.footer.video" = "共%ld个视频";
