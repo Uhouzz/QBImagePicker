@@ -88,6 +88,7 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setFrame:CGRectMake(0, 0, 44, 44)];
+    backButton.imageEdgeInsets = UIEdgeInsetsMake(0, -13, 0, 13);
     [backButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [backButton setImage:[UIImage imageNamed:@"QBImage.bundle/icon_navigation_back"] forState:UIControlStateNormal];
@@ -99,9 +100,10 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     self.navigationItem.leftBarButtonItems = @[leftFixeItem,leftItem];
     
     UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [cancelButton setFrame:CGRectMake(0, 0, 60, 44)];
     NSBundle *bundle = self.imagePickerController.assetBundle;
     NSString *cancel = NSLocalizedStringFromTableInBundle(@"assets.footer.cancel", @"QBImagePicker", bundle, nil);
+    CGFloat width = [cancel sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}].width;
+    [cancelButton setFrame:CGRectMake(0, 0, width, 44)];
     cancelButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [cancelButton setTitle:cancel forState:UIControlStateNormal];
     [cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -228,9 +230,12 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     NSBundle *bundle = self.imagePickerController.assetBundle;
     NSString *preview = NSLocalizedStringFromTableInBundle(@"assets.footer.preview", @"QBImagePicker", bundle, nil);
     
+    CGFloat width = [preview sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}].width;
+
     UIButton *preViewButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    preViewButton.frame = CGRectMake(0, 0, 60, 44);
+    preViewButton.frame = CGRectMake(0, 0, width + 10, 44);
     preViewButton.alpha = 0.4;
+    preViewButton.titleEdgeInsets = UIEdgeInsetsMake(0, -5, 0, 5);
     preViewButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [preViewButton setTitle:preview forState:UIControlStateNormal];
     [preViewButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -250,7 +255,7 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     UIBarButtonItem *item3 = [[UIBarButtonItem alloc] initWithCustomView:self.sendButton];
     
     UIBarButtonItem *item4 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    item4.width = -7;
+    item4.width = -5;
     
     self.toolbarItems = @[item1,item2,item3,item4];
     
@@ -550,7 +555,7 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     QBPhotoBrowser *browser = [[QBPhotoBrowser alloc] initWithPhotos:assets
                                                         currentIndex:page];
     browser.delegate = self;
-
+    browser.imagePickerController = self.imagePickerController;
     browser.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:browser animated:YES];
 }

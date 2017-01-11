@@ -71,9 +71,10 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
 
 - (void) setupNavigationItem {
     UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [cancelButton setFrame:CGRectMake(0, 0, 60, 44)];
     NSBundle *bundle = self.imagePickerController.assetBundle;
     NSString *cancel = NSLocalizedStringFromTableInBundle(@"assets.footer.cancel", @"QBImagePicker", bundle, nil);
+    CGFloat width = [cancel sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}].width;
+    [cancelButton setFrame:CGRectMake(0, 0, width, 44)];
     cancelButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [cancelButton setTitle:cancel forState:UIControlStateNormal];
     [cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];

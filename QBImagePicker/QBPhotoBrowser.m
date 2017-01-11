@@ -9,6 +9,13 @@
 #import "QBPhotoBrowser.h"
 #import "QBPhotoBrowserCell.h"
 #import "QBSendButton.h"
+#import "QBImagePickerController.h"
+
+@interface QBImagePickerController (Private)
+
+@property (nonatomic, strong) NSBundle *assetBundle;
+
+@end
 
 @interface QBPhotoBrowser ()<UICollectionViewDataSource,UICollectionViewDelegate>
 {
@@ -56,6 +63,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor];
+    self.view.clipsToBounds = YES;
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     [self browserCollectionView];
@@ -65,7 +73,6 @@
     
     [self updateSelestedNumber];
     [self updateNavigationBarAndToolBar];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -140,17 +147,22 @@
 
 - (void) setupNavigationBarItems {
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    UIEdgeInsets insets = UIEdgeInsetsMake(0, -20, 0, 20);
-    [backButton setImageEdgeInsets:insets];
     [backButton setFrame:CGRectMake(0, 0, 44, 44)];
+    backButton.imageEdgeInsets = UIEdgeInsetsMake(0, -13, 0, 13);
     [backButton addTarget:self action:@selector(leftButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [backButton setImage:[UIImage imageNamed:@"QBImage.bundle/icon_back"] forState:UIControlStateNormal];
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
-    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    UIBarButtonItem *leftFixeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    leftFixeItem.width = -15;
+    self.navigationItem.leftBarButtonItems = @[leftFixeItem,leftItem];
     
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
-    self.navigationItem.rightBarButtonItem = rightItem;
+    
+    UIBarButtonItem *rightFixeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    rightFixeItem.width = -10;
+    self.navigationItem.rightBarButtonItems = @[rightFixeItem,rightItem];
 }
 
 - (void) leftButtonAction {
@@ -314,7 +326,7 @@
     if (!_sendButton) {
         _sendButton = [[QBSendButton alloc] initWithFrame:CGRectZero];
         [_sendButton addTaget:self action:@selector(sendButtonAction)];
-        NSBundle *bundle = [NSBundle bundleForClass:NSClassFromString(@"QBImagePickerController")];
+        NSBundle *bundle = self.imagePickerController.assetBundle;
         NSString *done = NSLocalizedStringFromTableInBundle(@"assets.footer.done", @"QBImagePicker", bundle, nil);
         _sendButton.title = done;
     }
@@ -357,8 +369,11 @@
     if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
         // Hide status bar
         _statusBarShouldBeHidden = hidden;
+        [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:UIStatusBarAnimationSlide];
+
         [UIView animateWithDuration:animationDuration animations:^(void) {
             [self setNeedsStatusBarAppearanceUpdate];
+
         } completion:^(BOOL finished) {}];
     }
     

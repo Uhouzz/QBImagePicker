@@ -10,6 +10,7 @@
 #import <Photos/PHAsset.h>
 
 @class QBPhotoBrowser;
+@class QBImagePickerController;
 
 @protocol QBPhotoBrowserDelegate <NSObject>
 
@@ -25,6 +26,7 @@
 
 @interface QBPhotoBrowser : UIViewController
 
+@property (nonatomic, weak) QBImagePickerController *imagePickerController;
 @property (nonatomic, weak) id<QBPhotoBrowserDelegate> delegate;
 
 - (instancetype)initWithPhotos:(NSArray *)photosArray
