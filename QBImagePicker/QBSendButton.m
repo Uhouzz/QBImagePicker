@@ -32,7 +32,6 @@ static CGFloat const kSendButtonTextWitdh = 38.0f;
     if (self) {
         self.frame = CGRectMake(0, 0, 58, 26);
         [self initSubViews];
-        self.badgeValue = @"0";
     }
     return self;
 }
@@ -55,7 +54,6 @@ static CGFloat const kSendButtonTextWitdh = 38.0f;
     
     UIButton *sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
     sendButton.frame = CGRectMake(0, 0, self.width, self.height);
-    [sendButton setTitle:@"完成" forState:UIControlStateNormal];
     [sendButton setTitleColor:[UIColor hexStringToColor:kSendButtonTintNormalColor] forState:UIControlStateNormal];
     [sendButton setTitleColor:[UIColor hexStringToColor:kSendButtonTintAbnormalColor] forState:UIControlStateHighlighted];
     [sendButton setTitleColor:[UIColor hexStringToColor:kSendButtonTintAbnormalColor] forState:UIControlStateDisabled];
@@ -69,6 +67,7 @@ static CGFloat const kSendButtonTextWitdh = 38.0f;
 - (void)setTitle:(NSString *)title {
     _title = title;
     [self.sendButton setTitle:title forState:UIControlStateNormal];
+    self.badgeValue = @"0";
 }
 
 - (void)setBadgeValue:(NSString *)badgeValue {
