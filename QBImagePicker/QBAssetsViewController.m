@@ -699,8 +699,6 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     
 
     if (imagePickerController.showsNumberOfSelectedAssets) {
-        
-        self.sendButton.badgeValue = [NSString stringWithFormat:@"%@",@(selectedAssets.count)];
         [self updateToolBar];
     }
     
@@ -774,8 +772,6 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
         return NO;
     } else {
         [self.imagePickerController.selectedAssets addObject:asset];
-        self.sendButton.badgeValue = [NSString stringWithFormat:@"%@",@(self.imagePickerController.selectedAssets.count)];
-        
         [self updateToolBar];
         
         return YES;
@@ -792,26 +788,23 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
         [self.imagePickerController.selectedAssets removeObject:asset];
     }
     
-    self.sendButton.badgeValue = [NSString stringWithFormat:@"%@",@(self.imagePickerController.selectedAssets.count)];
-   
     [self updateToolBar];
     
     [self.collectionView reloadData];
 }
 
 - (void) updateToolBar {
-    if (self.imagePickerController.selectedAssets.count < 1) {
-        self.sendButton.alpha = 0.4;
-        self.preViewButton.alpha = 0.4;
-        self.preViewButton.userInteractionEnabled = NO;
-        self.sendButton.userInteractionEnabled = NO;
-        
-    } else {
-        self.sendButton.alpha = 1;
-        self.preViewButton.alpha = 1;
-        self.preViewButton.userInteractionEnabled = YES;
-        self.sendButton.userInteractionEnabled = YES;
-    }
+    
+    NSInteger selectedNumber = self.imagePickerController.selectedAssets.count;
+    
+    self.sendButton.badgeValue = [NSString stringWithFormat:@"%@",@(selectedNumber)];
+    
+    self.sendButton.alpha = selectedNumber < 1 ? 0.4 : 1;
+    self.preViewButton.alpha = selectedNumber < 1 ? 0.4 : 1;
+
+    self.sendButton.userInteractionEnabled = selectedNumber < 1 ? NO : YES;
+    self.preViewButton.userInteractionEnabled = selectedNumber < 1 ? NO : YES;
+
 }
 
 @end
