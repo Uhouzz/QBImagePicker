@@ -12,8 +12,8 @@
 "assets.footer.done" = "Done";
 "assets.footer.preview" = "Preview";
 
-"assets.alert.content" = "你最多只能选择%ld张图片";
-"assets.alert.done" = "知道了";
+"assets.alert.content" = "You can only select up to %ld images";
+"assets.alert.done" = "Got it";
 
 "assets.footer.photo" = "%ld Photo";
 "assets.footer.photos" = "%ld Photos";
