@@ -7,6 +7,7 @@
 //
 
 #import "QBAssetCell.h"
+#import "UIButton+QBTapArea.h"
 
 @interface QBAssetCell ()
 
@@ -19,6 +20,8 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
+    
+    self.checkButton.hitTestEdgeInsets = UIEdgeInsetsMake(-2, -15, -15, -2);
     
     [self.checkButton setTitle:@"" forState:UIControlStateNormal];
     
