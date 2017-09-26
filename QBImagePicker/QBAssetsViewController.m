@@ -99,6 +99,10 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     
     self.navigationItem.leftBarButtonItems = @[leftFixeItem,leftItem];
     
+    if (([[[UIDevice currentDevice] systemVersion] compare:@"11.0" options:NSNumericSearch] != NSOrderedAscending)) {
+        self.navigationItem.leftBarButtonItem = leftItem;
+    }
+    
     UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
     NSBundle *bundle = self.imagePickerController.assetBundle;
     NSString *cancel = NSLocalizedStringFromTableInBundle(@"assets.footer.cancel", @"QBImagePicker", bundle, nil);
@@ -113,6 +117,10 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     UIBarButtonItem *rightFixeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     rightFixeItem.width = -10;
     self.navigationItem.rightBarButtonItems = @[rightFixeItem,rightItem];
+    
+    if (([[[UIDevice currentDevice] systemVersion] compare:@"11.0" options:NSNumericSearch] != NSOrderedAscending)) {
+        self.navigationItem.rightBarButtonItem = rightItem;
+    }
 }
 
 - (void) backButtonAction {

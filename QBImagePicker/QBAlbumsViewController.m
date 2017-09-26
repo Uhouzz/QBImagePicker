@@ -84,6 +84,10 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     UIBarButtonItem *rightFixeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     rightFixeItem.width = -10;
     self.navigationItem.rightBarButtonItems = @[rightFixeItem,rightItem];
+    
+    if (([[[UIDevice currentDevice] systemVersion] compare:@"11.0" options:NSNumericSearch] != NSOrderedAscending)) {
+        self.navigationItem.rightBarButtonItem = rightItem;
+    }
 }
 
 
