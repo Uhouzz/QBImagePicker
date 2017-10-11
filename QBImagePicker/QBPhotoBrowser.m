@@ -318,7 +318,8 @@
 - (UIToolbar *)toolbar {
     if (!_toolbar) {
         CGFloat height = 44;
-        _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height)];
+        CGFloat safeAreaInsetsBottom = [UIScreen mainScreen].bounds.size.height == 812 ? 34 : 0;
+        _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height - height - safeAreaInsetsBottom, self.view.bounds.size.width, height)];
         if ([[UIToolbar class] respondsToSelector:@selector(appearance)]) {
             [_toolbar setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
             [_toolbar setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsCompact];
