@@ -387,7 +387,9 @@
         } completion:^(BOOL finished) {}];
     }
     
-    CGRect frame = CGRectIntegral(CGRectMake(0, self.view.bounds.size.height - 44, self.view.bounds.size.width, 44));
+    BOOL needHair = ([UIScreen mainScreen].bounds.size.height == 812) || ([UIScreen mainScreen].bounds.size.height == 896);
+    CGFloat safeAreaInsetsBottom = needHair ? 34 : 0;
+    CGRect frame = CGRectIntegral(CGRectMake(0, self.view.bounds.size.height - 44 - safeAreaInsetsBottom, self.view.bounds.size.width, 44));
     
     // Pre-appear animation positions for iOS 7 sliding
     if ([self areControlsHidden] && !hidden && animated) {
